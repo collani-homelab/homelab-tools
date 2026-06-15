@@ -1,0 +1,12 @@
+[project]
+name = "agent-sre-patrol"
+version = "0.1.0"
+description = "Autonomous SRE patrol agent — polls homelab health every 15 minutes and alerts on threshold breaches."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiohttp>=3.13.5",
+    "mcp>=1.27.1",
+    "pydantic-ai>=1.102.0",
+    "python-dotenv>=1.2.2",
+]

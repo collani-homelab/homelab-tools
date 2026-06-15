@@ -1,0 +1,8 @@
+[project]
+name = "agent-network-sentinel"
+version = "0.1.0"
+description = "Network sentinel — detects unknown UniFi clients and alerts on first sighting."
+requires-python = ">=3.14"
+dependencies = [
+    "mcp>=1.27.1",
+]

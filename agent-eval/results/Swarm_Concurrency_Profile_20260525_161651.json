@@ -1,0 +1,34 @@
+{
+    "timestamp": "2026-05-25T16:11:48.233842",
+    "runs": {
+        "sre/ollama/qwen2.5-coder:7b": [
+            {
+                "concurrency": 5,
+                "total_time": 95.22,
+                "success_count": 5,
+                "failure_count": 0,
+                "rps": 0.05,
+                "avg_latency": 85.74,
+                "p95_latency": 94.37
+            },
+            {
+                "concurrency": 10,
+                "total_time": 64.64,
+                "success_count": 10,
+                "failure_count": 0,
+                "rps": 0.15,
+                "avg_latency": 41.15,
+                "p95_latency": 61.76
+            },
+            {
+                "concurrency": 25,
+                "total_time": 132.89,
+                "success_count": 25,
+                "failure_count": 0,
+                "rps": 0.19,
+                "avg_latency": 75.46,
+                "p95_latency": 127.48
+            }
+        ]
+    }
+}

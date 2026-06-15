@@ -1,0 +1,12 @@
+experiment_name: "Phase 2: Vision Content Explanation Baseline"
+workflow: "single_agent"
+system_prompt: "You are an expert image analyst. Briefly describe what you see in the provided image."
+models_to_test:
+  - "openai/ollama/ws/moondream:latest"
+  - "openai/ollama/ws/llava:latest"
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"
+test_cases:
+  - name: "China Image Understanding"
+    input_file: ".venv/lib/python3.14/site-packages/sklearn/datasets/images/china.jpg"
+    task_prompt: "Identify the main architectural features in this image. Is it a modern city or historical building?"
+    expected_output_criteria: "The output must identify that the image contains historical architecture (likely a temple or pagoda) and not a modern city skyline."

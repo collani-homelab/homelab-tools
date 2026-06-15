@@ -1,0 +1,18 @@
+name: Context Degradation Profiling
+description: Test how accuracy degrades as the context window approaches 32k tokens.
+tasks:
+  - id: find_needle_5k
+    model: "openai/ollama/sre/qwen2.5-coder:7b"
+    prompt: "Analyze the provided codebase and extract the hidden BUG, TODO, or CRITICAL comment."
+    input_file: inputs/synthetic_codebase_5000.py
+    concurrency: 15
+  - id: find_needle_15k
+    model: "openai/ollama/sre/qwen2.5-coder:7b"
+    prompt: "Analyze the provided codebase and extract the hidden BUG, TODO, or CRITICAL comment."
+    input_file: inputs/synthetic_codebase_15000.py
+    concurrency: 15
+  - id: find_needle_30k
+    model: "openai/ollama/sre/qwen2.5-coder:7b"
+    prompt: "Analyze the provided codebase and extract the hidden BUG, TODO, or CRITICAL comment."
+    input_file: inputs/synthetic_codebase_30000.py
+    concurrency: 20

@@ -1,0 +1,16 @@
+{
+    "timestamp": "2026-05-25T18:49:39.185896",
+    "runs": {
+        "ws/ollama/llama3.2-vision:11b": [
+            {
+                "concurrency": 25,
+                "total_time": 5.32,
+                "success_count": 25,
+                "failure_count": 0,
+                "rps": 4.7,
+                "avg_latency": 3.79,
+                "p95_latency": 4.94
+            }
+        ]
+    }
+}

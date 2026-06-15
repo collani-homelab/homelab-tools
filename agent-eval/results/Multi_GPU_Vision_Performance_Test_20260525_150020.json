@@ -1,0 +1,131 @@
+{
+    "experiment_name": "Multi-GPU Vision Performance Test",
+    "runs": [
+        {
+            "pipeline": {
+                "model": "ollama/moondream:latest"
+            },
+            "case_name": "China Image Understanding",
+            "latency_sec": 4.478,
+            "tokens": {
+                "completion_tokens": 116,
+                "prompt_tokens": 783,
+                "total_tokens": 899,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The image shows a very tall, multi-tiered pagoda with a red roof and gold accents, situated on top of a hill overlooking water. The pagoda is surrounded by trees, giving it an impression of being part of the natural landscape rather than a man-made structure in a city setting.\n\nThere are several boats visible near the shoreline, suggesting that this location might be close to a body of water or harbor area. The presence of these boats and the pagoda's height over the water create a picturesque scene, blending architecture with nature.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 3\n    There are several boats visible near the shoreline, suggesting that this location might be close to a body of water or",
+                "GEval": 0.1,
+                "GEvalReason": "The response does not provide an evaluation of the image based on the specified criteria. It describes the scene but fails to assess whether it features historical architecture, avoids modern city skylines, reflects an older era, and lacks modern infrastructure elements."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "ollama/moondream:latest"
+            },
+            "case_name": "Flower Image Understanding",
+            "latency_sec": 0.218,
+            "tokens": {
+                "completion_tokens": 43,
+                "prompt_tokens": 781,
+                "total_tokens": 824,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The prominent object in the image is a dahlia flower, which has a bright orange color. The flower is the main focus of the picture, with the background being blurred to draw attention to it.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    The prominent object in the image is a dahlia flower, which has a bright orange color. The flower is the main focus of",
+                "GEval": 0.7,
+                "GEvalReason": "The response correctly identifies the flower as a dahlia and mentions its bright orange color. However, it does not specify any prominent feature of the dahlia."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "ollama/llava:latest"
+            },
+            "case_name": "China Image Understanding",
+            "latency_sec": 2.47,
+            "tokens": {
+                "completion_tokens": 103,
+                "prompt_tokens": 637,
+                "total_tokens": 740,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The image shows an ancient-looking pagoda, which is a traditional East Asian tower with multiple tiers and often associated with Chinese architecture. It's situated in a scenic environment with a body of water and lush greenery around. This suggests that it might be part of a historical site or an area with cultural significance rather than a modern city. The surrounding landscape looks peaceful and well-maintained, indicating that the location is likely significant enough to be preserved for its heritage value.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    The image shows an ancient-looking pagoda, which is a traditional East Asian tower with multiple tiers and often assoc",
+                "GEval": 0.9,
+                "GEvalReason": "The response accurately identifies the image as depicting an ancient-looking pagoda, which is a historical structure typical of East Asian architecture. The description highlights elements such as multiple tiers, association with Chinese culture, scenic environment, and peaceful surroundings, aligning well with the evaluation steps regarding historical buildings and settings."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "ollama/llava:latest"
+            },
+            "case_name": "Flower Image Understanding",
+            "latency_sec": 2.173,
+            "tokens": {
+                "completion_tokens": 61,
+                "prompt_tokens": 633,
+                "total_tokens": 694,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The image shows a single, large flower with a light orange or yellow petal and a lighter center. It appears to be a close-up shot of the flower against a background that includes darker green leaves, which could suggest it's in a garden or an area with vegetation.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    The image shows a single, large flower with a light orange or yellow petal and a lighter center. It appears to be a cl",
+                "GEval": 1.0,
+                "GEvalReason": "The response correctly identifies a flower, mentions prominent features such as its large size, light orange or yellow petals, and lighter center. It also includes the color of the flower (light orange or yellow). The information provided is accurate and relevant to the description of the image."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "ollama/llama3.2-vision:11b"
+            },
+            "case_name": "China Image Understanding",
+            "latency_sec": 7.568,
+            "tokens": {
+                "completion_tokens": 147,
+                "prompt_tokens": 53,
+                "total_tokens": 200,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "### Step 1: Identify the main architectural features in this image.\n\n*   The building has a pagoda-style roof.\n*   The building has a central tower with multiple levels.\n*   The building has a traditional Chinese style.\n\n### Step 2: Is it a modern city or historical building?\n\n*   The building is surrounded by trees and water, suggesting it is located in a natural environment.\n*   The building has a traditional Chinese style, which is typically associated with historical buildings.\n\n### Step 3: Conclusion\n\nBased on the architectural features and the natural environment, it is likely that the building is a historical building, possibly a temple or a palace, located in a park or a garden in a modern city.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 3\n    *   The building has a pagoda-style roof.\n            ^^^^^^^^\nSyntaxError: invalid syntax\n",
+                "GEval": 0.8,
+                "GEvalReason": "The response correctly identifies the architectural features as historical and traditional Chinese, aligning with evaluation steps 1 and 2. It also suggests a natural environment surrounding the building, which is consistent with older urban settings mentioned in step 3. However, it does not explicitly state that there are no modern highways, billboards, or other contemporary urban developments (step 4)."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "ollama/llama3.2-vision:11b"
+            },
+            "case_name": "Flower Image Understanding",
+            "latency_sec": 6.575,
+            "tokens": {
+                "completion_tokens": 61,
+                "prompt_tokens": 50,
+                "total_tokens": 111,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The prominent object in the image is a flower. The flower is peach-colored and has a spherical shape, with a cluster of petals that are arranged in a symmetrical pattern. The flower is in focus, while the background is blurred, suggesting that the image was taken with a shallow depth of field.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    The prominent object in the image is a flower. The flower is peach-colored and has a spherical shape, with a cluster o",
+                "GEval": 0.6,
+                "GEvalReason": "The response correctly identifies the flower as the prominent object in the image and describes its color as peach. However, it does not mention any specific flower name or a prominent feature of the identified flower."
+            }
+        }
+    ]
+}

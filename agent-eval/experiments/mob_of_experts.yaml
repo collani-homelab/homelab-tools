@@ -1,0 +1,11 @@
+name: Mob of Experts Consensus
+description: Evaluate multi-agent consensus vs single large model pass using async-worker.
+tasks:
+  - id: generate_proposal
+    model: "openai/ollama/sre/qwen2.5-coder:1.5b"
+    prompt: "Design a scalable architecture for an asynchronous task queue using Golang and SQLite. Focus on WAL mode and concurrency."
+    concurrency: 10
+  - id: judge_synthesis
+    model: "openai/ollama/ws/llama3.2-vision:11b"
+    prompt: "You are the Judge. Synthesize the 10 provided architectural proposals into a single, authoritative design. Use a strict majority-rules heuristic to discard outliers."
+    depends_on: generate_proposal

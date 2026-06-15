@@ -1,0 +1,18 @@
+infrastructure:
+  unraid_nodes:
+    - name: "primary"
+      ip: "10.0.0.10"
+    - name: "backup"
+      ip: "10.0.0.11"
+  static_nodes:
+    - name: "sre-server"
+      mac: ""
+      device_type: "server"
+      version: "Linux"
+      ip_address: "10.0.0.20"
+      state: "running"
+  observability:
+    otel_enabled_ips:
+      - "10.0.0.20"
+    loki_shipping_ips:
+      - "10.0.0.20"

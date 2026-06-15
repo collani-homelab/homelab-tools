@@ -1,0 +1,47 @@
+{
+    "experiment_name": "SRE Tier 2 Vision Watchdog Benchmark",
+    "runs": [
+        {
+            "pipeline": {
+                "model": "vllm/Qwen/Qwen2-VL-2B-Instruct"
+            },
+            "case_name": "China Image Understanding",
+            "latency_sec": 7.794,
+            "tokens": {
+                "completion_tokens": 24,
+                "prompt_tokens": 397,
+                "total_tokens": 421,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "main architectural features(101,66),(571,987)",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    main architectural features(101,66),(571,987)\n         ^^^^^^^^^^^^^\nSyntaxError: invalid syntax\n",
+                "GEval": 0.0,
+                "GEvalReason": "The response does not address the evaluation steps or analyze the image content. It simply provides coordinates without identifying architectural features or comparing them to historical or modern structures."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "vllm/Qwen/Qwen2-VL-2B-Instruct"
+            },
+            "case_name": "Flower Image Understanding",
+            "latency_sec": 0.645,
+            "tokens": {
+                "completion_tokens": 16,
+                "prompt_tokens": 394,
+                "total_tokens": 410,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The image features a single dahlia flower with a light orange color.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    The image features a single dahlia flower with a light orange color.\n        ^^^^^\nSyntaxError: invalid syntax\n",
+                "GEval": 1.0,
+                "GEvalReason": "The output correctly identifies a specific flower (dahlia), mentions a prominent feature (light orange color), and specifies the color associated with the flower."
+            }
+        }
+    ]
+}

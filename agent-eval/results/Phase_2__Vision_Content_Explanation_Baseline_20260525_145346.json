@@ -1,0 +1,47 @@
+{
+    "experiment_name": "Phase 2: Vision Content Explanation Baseline",
+    "runs": [
+        {
+            "pipeline": {
+                "model": "ollama/moondream:latest"
+            },
+            "case_name": "China Image Understanding",
+            "latency_sec": 5.414,
+            "tokens": {
+                "completion_tokens": 116,
+                "prompt_tokens": 783,
+                "total_tokens": 899,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The image shows a very tall, multi-tiered pagoda with a red roof and gold accents, situated on top of a hill overlooking water. The pagoda is surrounded by trees, giving it an impression of being part of the natural landscape rather than a man-made structure in a city setting.\n\nThere are several boats visible near the shoreline, suggesting that this location might be close to a body of water or harbor area. The presence of these boats and the pagoda's height over the water create a picturesque scene, blending architecture with nature.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 3\n    There are several boats visible near the shoreline, suggesting that this location might be close to a body of water or",
+                "GEval": 0.3,
+                "GEvalReason": "The response does not correctly identify the image as containing only historical architecture. It mentions elements like boats and trees that could suggest a modern setting, which is contrary to the evaluation steps requiring only historical structures."
+            }
+        },
+        {
+            "pipeline": {
+                "model": "ollama/llava:latest"
+            },
+            "case_name": "China Image Understanding",
+            "latency_sec": 5.333,
+            "tokens": {
+                "completion_tokens": 156,
+                "prompt_tokens": 637,
+                "total_tokens": 793,
+                "completion_tokens_details": null,
+                "prompt_tokens_details": null
+            },
+            "actual_output": "The image shows a traditional Chinese-style pavilion with multiple eaves, intricate decorations, and a prominent central dome under a blue sky. There are red walls and green roofs, which is characteristic of traditional Chinese architecture. The structure appears to be on top of a hill, overlooking a body of water with boats visible in the distance. In front of the pavilion, there's a lush green landscape that contrasts with the man-made structures. There are also trees and greenery surrounding the area, indicating it might be in a park or a protected natural site. The presence of this distinctive architecture suggests that it is not a modern city but rather a historical building preserved for cultural heritage or tourism purposes.",
+            "scores": {
+                "ExecutionMetric": 0.0,
+                "ExecutionReason": "Code failed with exit code 1. Stderr:   File \"/home/wcollani/repos/homelab/Tools/agent-eval/temp_output.py\", line 1\n    The image shows a traditional Chinese-style pavilion with multiple eaves, intricate decorations, and a prominent centr",
+                "GEval": 1.0,
+                "GEvalReason": "The response accurately identifies the image as containing historical architecture, specifically a traditional Chinese pavilion. It correctly evaluates the architectural style as characteristic of an ancient or traditional era, confirms that no contemporary urban structures are prominently featured, and distinguishes it from modern cityscapes. The detailed description of the environment further supports the assessment that this is a preserved historical site rather than a modern urban area."
+            }
+        }
+    ]
+}

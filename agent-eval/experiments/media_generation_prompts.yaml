@@ -1,0 +1,13 @@
+experiment_name: "Phase 3: Media Generation Prompting"
+workflow: "single_agent"
+system_prompt: "You are an AI assistant that writes structured JSON configurations for image generation tools."
+models_to_test:
+  - "openai/ollama/ws/qwen2.5-coder:1.5b-base"
+  - "openai/ollama/ws/llama3.1:8b"
+  - "openai/ollama/ws/qwen2.5-coder:14b"
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"
+test_cases:
+  - name: "Futuristic Homelab Prompt"
+    input_file: "Learning/multi-agent-patterns/README.md"
+    task_prompt: "Ignore the code input. The user wants an image of a futuristic homelab. Write a structured JSON payload for ComfyUI containing 'positive_prompt' and 'negative_prompt' keys. Do NOT use markdown. Return only the raw JSON."
+    expected_output_criteria: "The output must be valid JSON and contain the keys 'positive_prompt' and 'negative_prompt'."

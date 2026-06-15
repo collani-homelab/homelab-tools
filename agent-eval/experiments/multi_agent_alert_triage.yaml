@@ -1,0 +1,13 @@
+experiment_name: "Multi-Agent Alert Triage Pipeline"
+workflow: "multi_agent_triage"
+system_prompt: "You are a Lead SRE Orchestrator. Analyze the alert and synthesized metrics/logs to write a final remediation plan. Output MUST include the generated PromQL and LogQL queries, and state the root cause and remediation steps."
+orchestrator_models:
+  - "openai/ollama/ws/llama3.1:8b"
+  - "openai/ollama/ws/deepseek-r1:14b"
+subagent_model: "openai/ollama/ws/qwen2.5-coder:7b"
+test_cases:
+  - name: "Triage High CPU Alert"
+    input_file: "src/scripts/benchmarks/sre_inputs/mock_alert_payload.json"
+    task_prompt: "Triage this alert payload."
+    expected_output_criteria: "The output must contain a valid PromQL query searching for 'api-server-1'. It must contain a valid LogQL query for the container 'api-server-1'. It must state that the root cause is 'database connection pool exhausted'. It must recommend increasing the connection pool limit or restarting the api-server."
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"

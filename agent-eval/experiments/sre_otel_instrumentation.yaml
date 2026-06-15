@@ -1,0 +1,20 @@
+experiment_name: "Single-Agent OTEL Instrumentation"
+system_prompt: "You are an expert Python SRE. Rewrite the provided python code to include OpenTelemetry tracing. Output ONLY the valid Python code. No markdown formatting."
+models_to_test:
+  # 3070ti (8GB VRAM) candidates
+  - "openai/ollama/ws/qwen2.5-coder:1.5b-base"
+  - "openai/ollama/ws/llama3.1:8b"
+  - "openai/ollama/ws/qwen2.5-coder:7b"
+  - "openai/ollama/ws/deepseek-r1:7b"
+  - "openai/ollama/ws/deepseek-coder:6.7b"
+  - "openai/ollama/ws/mistral:latest"
+  # 5080 (16GB VRAM) candidates
+  - "openai/ollama/ws/qwen2.5-coder:14b"
+  - "openai/ollama/ws/deepseek-r1:14b"
+  - "openai/ollama/ws/gemma4:latest"
+test_cases:
+  - name: "Instrument Python API"
+    input_file: "src/scripts/benchmarks/sre_inputs/mock_api.py"
+    task_prompt: "Add OpenTelemetry tracing to this Python script. Instrument the 'process_request' function with a span and add the 'user_id' as a span attribute."
+    expected_output_criteria: "The code must import `opentelemetry.trace`. It must use `@tracer.start_as_current_span` or `with tracer.start_as_current_span`. It must set an attribute on the span using `set_attribute` to store the user_id."
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"

@@ -1,0 +1,16 @@
+experiment_name: "Multi-GPU Vision Performance Test"
+workflow: "single_agent"
+system_prompt: "You are an expert image analyst. Briefly describe what you see in the provided image."
+models_to_test:
+  - "openai/ollama/ws/llava:13b"
+  - "openai/ollama/ws/llava-llama3:latest"
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"
+test_cases:
+  - name: "China Image Understanding"
+    input_file: ".venv/lib/python3.14/site-packages/sklearn/datasets/images/china.jpg"
+    task_prompt: "Identify the main architectural features in this image. Is it a modern city or historical building?"
+    expected_output_criteria: "The output must identify that the image contains historical architecture and not a modern city skyline."
+  - name: "Flower Image Understanding"
+    input_file: ".venv/lib/python3.14/site-packages/sklearn/datasets/images/flower.jpg"
+    task_prompt: "Describe the subject of this image. What is the prominent object and its color?"
+    expected_output_criteria: "The output must identify a flower and mention its prominent features or color."

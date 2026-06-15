@@ -1,0 +1,16 @@
+experiment_name: "Hardware Profiling: Context VRAM Thrashing"
+system_prompt: "You are a data retrieval agent. Extract the requested secret code precisely. ONLY output the secret code."
+num_ctx: 32768
+orchestrator_models:
+  - "openai/ollama/ws/direct_qwen2.5-coder:7b"
+  - "openai/ollama/sre/direct_qwen2.5-coder:7b"
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"
+test_cases:
+  - name: "Needle in 1k Haystack"
+    input_file: "Tools/agent-eval/experiments/inputs/haystack_1k.txt"
+    task_prompt: "Find the USER_SECRET_CODE_IS in the following text and output ONLY the secret code value."
+    expected_output_criteria: "The output MUST be exactly 'ALPHA_PROTOCOL_ACTIVE'."
+  - name: "Needle in 10k Haystack"
+    input_file: "Tools/agent-eval/experiments/inputs/haystack_10k.txt"
+    task_prompt: "Find the USER_SECRET_CODE_IS in the following text and output ONLY the secret code value."
+    expected_output_criteria: "The output MUST be exactly 'OMEGA_PROTOCOL_ACTIVE'."

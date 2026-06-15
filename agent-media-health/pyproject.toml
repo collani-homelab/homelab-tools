@@ -1,0 +1,10 @@
+[project]
+name = "agent-media-health"
+version = "0.1.0"
+description = "Daily media pipeline health check — NZBGet failures, Sonarr/Radarr/Lidarr queue stalls and wanted counts, Tautulli transcode load and session errors."
+requires-python = ">=3.14"
+dependencies = [
+    "mcp>=1.27.1",
+    "openai>=2.0.0",
+    "pydantic>=2.0.0",
+]

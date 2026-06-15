@@ -1,0 +1,22 @@
+## Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.deepeval/
+
+## Go
+agent-standup/agent-standup
+agent-standup/results/*.log
+
+## Agent runtime state
+agent-network-sentinel/known-devices.json
+agent-network-sentinel/state.json
+agent-status/config.yaml
+*/reports/
+
+## Misc
+.DS_Store
+*.db
+*.db-shm
+*.db-wal

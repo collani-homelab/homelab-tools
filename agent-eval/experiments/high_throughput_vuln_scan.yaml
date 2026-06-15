@@ -1,0 +1,9 @@
+name: High-Throughput Vulnerability Scanning
+description: Simulate an automated nightly security audit of the entire homelab repository.
+tasks:
+  - id: scan_chunk
+    model: "openai/ollama/sre/qwen2.5-coder:7b"
+    prompt: "Perform a Security Vulnerability Analysis on this code chunk. Report any hardcoded secrets, injection vectors, or logic flaws."
+    input_dir: inputs/vuln_chunks/
+    file_pattern: "*.txt"
+    concurrency: 50 # Blast them all simultaneously

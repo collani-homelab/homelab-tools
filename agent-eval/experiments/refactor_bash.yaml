@@ -1,0 +1,17 @@
+experiment_name: "Single-Agent Bash Refactor"
+system_prompt: "You are an expert Python engineer. Return ONLY python code. No markdown formatting."
+models_to_test:
+  # Workstation (RTX 5080) - full model library
+  - "openai/ollama/ws/qwen2.5-coder:1.5b-base"
+  - "openai/ollama/ws/llama3.1:8b"
+  # SRE Server (RTX 3070ti) - worker will auto-pull if not present
+  - "openai/ollama/sre/qwen2.5-coder:1.5b-base"
+  - "openai/ollama/sre/qwen2.5-coder:7b"
+  - "openai/ollama/sre/llama3.1:8b"
+
+test_cases:
+  - name: "Refactor check_deployments.sh"
+    input_file: "src/scripts/check_deployments.sh"
+    task_prompt: "Convert this script to Python. Use the 'subprocess' module for SSH/curl commands. Ensure it is robust."
+    expected_output_criteria: "The python script must use the subprocess module. It must include error handling for the HTTP requests. It must have an entrypoint."
+judge_model: "openai/ollama/ws/qwen2.5-coder:14b"

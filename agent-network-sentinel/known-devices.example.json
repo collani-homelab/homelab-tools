@@ -1,0 +1,16 @@
+{
+  "aa:bb:cc:dd:ee:01": {
+    "hostname": "my-server",
+    "learned_at": "2026-01-01T00:00:00Z",
+    "name": "my-server",
+    "network": "Default",
+    "type": "wired"
+  },
+  "aa:bb:cc:dd:ee:02": {
+    "hostname": "my-laptop",
+    "learned_at": "2026-01-01T00:00:00Z",
+    "name": "my-laptop",
+    "network": "Default",
+    "type": "wireless"
+  }
+}
