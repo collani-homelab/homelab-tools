@@ -18,8 +18,10 @@ Each agent under `agent-*/` is a self-contained Python service with its own `Doc
 
 | Tool | Language | Purpose |
 |------|----------|---------|
-| [`agent-eval`](agent-eval/) | Python | YAML-driven LLM benchmarking CLI. Supports single-agent, Generator-Critic-Refiner, Mob of Experts, and SRE triage multi-agent pipelines. OTEL tracing + DeepEval scoring. |
 | [`agent-status`](agent-status/) | Python | CLI dashboard for parsing and displaying roadmap/project status. |
+| [`prompt-optimizer`](prompt-optimizer/) | Python | Hill-climbing prompt optimizer built on [`llm-eval-kit`](https://github.com/wcollani/llm-eval-kit)'s `GEval` scoring. Mutates a base prompt across generations and keeps the top performers. |
+
+YAML-driven LLM benchmarking (single-agent, Generator-Critic-Refiner, Mob of Experts, SRE triage pipelines, OTEL tracing + DeepEval scoring) now lives in the standalone [`llm-eval-kit`](https://github.com/wcollani/llm-eval-kit) package — the `agent-eval/` directory that used to live here is archived at [`Archive/agent-eval`](Archive/agent-eval/) and should not be used.
 
 ## Architecture
 
@@ -42,13 +44,13 @@ The LLM is deliberately kept out of the decision loop — all threshold checks a
 
 Uses the [Eino](https://github.com/cloudwego/eino) framework to fan out 8 persona agents concurrently (Option A) or sequentially (Option B), then synthesizes their reports via a synthesizer agent. See [`agent-standup/README.md`](agent-standup/README.md) for benchmark results comparing patterns and model configurations.
 
-### agent-eval — YAML experiment spec
+### llm-eval-kit — YAML experiment spec
 
 ```yaml
 name: My Experiment
 workflow: single_agent          # or: multi_agent_blog_gen, mob_of_experts, multi_agent_triage
-models_to_test: [ollama/qwen2.5-coder:7b]
-judge_model: ollama/qwen2.5-coder:14b
+models_to_test: [sre/qwen2.5-coder:7b]
+judge_model: ws/qwen2.5-coder:14b
 system_prompt: "You are a helpful assistant."
 test_cases:
   - name: My Test
@@ -56,9 +58,9 @@ test_cases:
     expected_output_criteria: "Response should include X and Y"
 ```
 
-Run with:
+Run with (requires `pip install -e ~/repos/llm-eval-kit` or `pip install llm-eval-kit`):
 ```bash
-python agent-eval/cli.py agent-eval/experiments/my_experiment.yaml
+llm-eval my_experiment.yaml
 ```
 
 ## Configuration
@@ -71,7 +73,8 @@ All agents are configured via environment variables. Copy `.env.example` files w
 | `OLLAMA_URL` | `http://localhost:11434/v1` | Ollama OpenAI-compatible endpoint |
 | `REPORTS_DIR` | `<agent-dir>/reports/` | Directory for markdown report output |
 | `NOTIFY_SH` | *(empty — notifications disabled)* | Path to ntfy wrapper script |
-| `OLLAMA_PROXY_URL` | `http://localhost:4000/v1` | LiteLLM proxy URL (agent-standup / agent-eval) |
+| `OLLAMA_PROXY_URL` | `http://localhost:4000/v1` | LiteLLM proxy URL (agent-standup) |
+| `OLLAMA_SRE_URL` / `OLLAMA_WS_URL` | `http://localhost:11434` | Direct Ollama routing for `sre/`/`ws/`-prefixed models (llm-eval-kit, prompt-optimizer) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `localhost:4319` | OTLP trace export endpoint |
 
 ## Building agent images

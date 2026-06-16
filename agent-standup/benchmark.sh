@@ -21,7 +21,7 @@ run_config() {
         lat="0.0"
     fi
     
-    ../agent-eval/.venv/bin/python judge.py "results/${name}.md" "$name" "$lat" > "results/${name}_score.json"
+    .venv/bin/python judge.py "results/${name}.md" "$name" "$lat" > "results/${name}_score.json"
     echo "$name complete."
 }
 
@@ -45,7 +45,7 @@ run_config_8() {
         lat="0.0"
     fi
     
-    ../agent-eval/.venv/bin/python judge.py "results/${name}.md" "$name" "$lat" > "results/${name}_score.json"
+    .venv/bin/python judge.py "results/${name}.md" "$name" "$lat" > "results/${name}_score.json"
     echo "$name complete."
 }
 
@@ -69,7 +69,7 @@ run_config_8_seq() {
         lat="0.0"
     fi
     
-    ../agent-eval/.venv/bin/python judge.py "results/${name}.md" "$name" "$lat" > "results/${name}_score.json"
+    .venv/bin/python judge.py "results/${name}.md" "$name" "$lat" > "results/${name}_score.json"
     echo "$name complete."
 }
 

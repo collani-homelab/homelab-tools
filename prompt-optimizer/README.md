@@ -29,9 +29,9 @@ pip install -e ~/repos/llm-eval-kit
 name: my-prompt-opt              # used as the experiment_name prefix (timestamp appended)
 task_description: "..."          # what the prompt is for — guides the mutator's rewrites
 base_prompt: "..."                # the prompt to optimize
-target_model: "ollama/..."        # model the prompt is actually used with
-mutator_model: "ollama/..."       # model used to generate prompt rewrites (defaults to target_model)
-judge_model: "ollama/..."         # GEval judge model
+target_model: "sre/..."           # model the prompt is actually used with
+mutator_model: "ws/..."           # model used to generate prompt rewrites (defaults to target_model)
+judge_model: "ws/..."             # GEval judge model
 generations: 3
 variants_per_generation: 4
 top_k: 2                          # survivors carried into the next generation
@@ -41,20 +41,26 @@ test_cases:
     expected_output_criteria: "..."       # GEval criteria text
 ```
 
-Model names use llm-eval-kit's existing prefix convention (`ollama/`, `ws/`, `sre/` — see
-`cli.py`'s `resolve_endpoint`); direct (`direct_ws/`, `direct_sre/`) routing isn't supported for
-judge/mutator models, same limitation as llm-eval-kit itself.
+Model names use llm-eval-kit's direct-routing prefix convention (`ws/<model>` → `OLLAMA_WS_URL`,
+`sre/<model>` → `OLLAMA_SRE_URL` — see `cli.py`'s `resolve_endpoint`), matching how the live agents
+(e.g. `agent-sre-patrol`) call Ollama directly rather than through LiteLLM.
 
 ## Run
 
+Create a `.env` file (gitignored) with:
+```
+OLLAMA_SRE_URL=http://192.168.99.178:11434
+OLLAMA_WS_URL=http://192.168.99.247:11434
+PROMETHEUS_PUSHGATEWAY_URL=http://localhost:9092
+```
+
+Then:
 ```bash
-PROMETHEUS_PUSHGATEWAY_URL=http://pushgateway:9091 \
-LITELLM_API_BASE=http://localhost:4000/v1 \
 python optimize.py experiments/sre-patrol-summary.yaml
 ```
 
 Prints per-generation scores and the winning prompt, and writes full results JSON via
-llm-eval-kit's `save_experiment_results` (same `results/` convention as llm-eval-kit/agent-eval).
+llm-eval-kit's `save_experiment_results` (same `results/` convention llm-eval-kit itself uses).
 
 The bundled `experiments/sre-patrol-summary.yaml` optimizes the summary prompt from
 `agent-sre-patrol/patrol.py`'s `SUMMARY_PROMPT` — if a run produces a clearly better prompt, copy
