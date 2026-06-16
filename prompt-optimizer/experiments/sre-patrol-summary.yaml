@@ -1,0 +1,39 @@
+name: sre-patrol-summary
+task_description: >
+  Summarize a list of homelab SRE patrol alerts into a single line (<=120 chars)
+  for an ntfy push notification. The summary must lead with the most severe
+  issue, be direct and specific about what's wrong, and say exactly
+  "All systems nominal." when there are no alerts. No JSON, no surrounding quotes.
+
+# Current SUMMARY_PROMPT from agent-sre-patrol/patrol.py:293-296
+base_prompt: |
+  Write a single line (<=120 chars) summarising the homelab SRE patrol findings.
+  Be direct and specific. List the most important issues first. If all clear, say "All systems nominal."
+  Return ONLY the summary string, no JSON, no quotes.
+
+target_model: "ollama/qwen2.5-coder:7b"
+mutator_model: "ollama/qwen2.5-coder:14b"
+judge_model: "ollama/qwen2.5-coder:14b"
+
+generations: 3
+variants_per_generation: 4
+top_k: 2
+
+test_cases:
+  - name: "Critical UPS + Array Degraded"
+    input: "Alerts: [CRITICAL] Garage UPS: 18% (threshold: <25%); [WARNING] Array: degraded (threshold: parity-check failed)"
+    expected_output_criteria: >
+      The summary must be 120 characters or fewer. It must mention the CRITICAL UPS issue before the
+      WARNING array issue. It must be a plain string with no surrounding quotes and no JSON formatting.
+      It must not include the literal phrase "All systems nominal."
+  - name: "Single Warning Only"
+    input: "Alerts: [WARNING] RAM: 87% (threshold: >85%)"
+    expected_output_criteria: >
+      The summary must be 120 characters or fewer, specific about the RAM warning and its observed value,
+      with no surrounding quotes and no JSON formatting. It must not include the literal phrase
+      "All systems nominal."
+  - name: "No Alerts"
+    input: "Alerts: "
+    expected_output_criteria: >
+      The summary must be exactly the phrase "All systems nominal." with no extra commentary, quotes,
+      or JSON formatting.
