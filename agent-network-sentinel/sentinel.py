@@ -12,15 +12,15 @@ Usage:
 """
 import argparse
 import asyncio
-import json
 import os
-import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 from mcp.client.session import ClientSession
 from mcp.client.sse import sse_client
+
+from shared import send_ntfy, parse_mcp_tool
 
 # ---------------------------------------------------------------------------
 # Config
@@ -64,15 +64,14 @@ async def _fetch_clients() -> list[dict]:
     async with sse_client(MCP_SSE_URL) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
-            result = await session.call_tool("get_unifi_clients", {})
-            text = "".join(c.text for c in result.content if hasattr(c, "text"))
-            raw = json.loads(text)
-            # The tool returns {"data": [...]} or a list directly
+            raw = parse_mcp_tool(await session.call_tool("get_unifi_clients", {}))
             if isinstance(raw, list):
                 return raw
             if isinstance(raw, dict):
-                return raw.get("data", raw.get("clients", []))
-    return []
+                clients = raw.get("data", raw.get("clients"))
+                if clients is not None:
+                    return clients
+            raise ValueError(f"Unexpected MCP response: {str(raw)[:200]}")
 
 
 # ---------------------------------------------------------------------------
@@ -150,13 +149,6 @@ def _check(clients: list[dict], known: dict, state: dict, now: str) -> list[dict
 # ---------------------------------------------------------------------------
 # Notify and report
 # ---------------------------------------------------------------------------
-def _send_ntfy(title: str, tags: str, priority: str, message: str) -> None:
-    if not os.path.exists(NOTIFY_SH):
-        return
-    subprocess.run([NOTIFY_SH, title, tags, priority, message],
-                   capture_output=True, timeout=10)
-
-
 def _write_report(date_label: str, newly_alerted: list[dict], all_unknown: dict) -> None:
     lines = [
         f"# Network Sentinel — {date_label}\n",
@@ -198,7 +190,11 @@ async def main(learn: bool) -> None:
     print(f"[network-sentinel] {now}")
 
     print("[1/3] Fetching UniFi clients...")
-    clients = await _fetch_clients()
+    try:
+        clients = await _fetch_clients()
+    except Exception as e:
+        print(f"[ERROR] Could not fetch UniFi clients: {e}", file=sys.stderr)
+        sys.exit(2)
     print(f"      {len(clients)} active client(s)")
 
     if learn:
@@ -225,7 +221,8 @@ async def main(learn: bool) -> None:
             body_lines.append(f"{d['mac']} ({d['hostname'] or 'unknown'}) via {conn} — {d['ip'] or 'no IP'}")
         body = "\n".join(body_lines)
 
-        _send_ntfy(
+        send_ntfy(
+            NOTIFY_SH,
             title=f"Network Sentinel: {len(newly_alerted)} unknown device(s) connected",
             tags="eyes,warning",
             priority="high",

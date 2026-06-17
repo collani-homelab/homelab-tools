@@ -10,4 +10,4 @@ if [ ! -d ".venv" ]; then
 fi
 
 echo "[run-patrol] Starting SRE patrol..."
-uv run python patrol.py "$@"
+PYTHONPATH="$(dirname "$SCRIPT_DIR"):${PYTHONPATH:-}" uv run python patrol.py "$@"

@@ -10,4 +10,4 @@ if [ ! -d ".venv" ]; then
 fi
 
 echo "[run-report] Generating weekly storage capacity report..."
-uv run python report.py "$@"
+PYTHONPATH="$(dirname "$SCRIPT_DIR"):${PYTHONPATH:-}" uv run python report.py "$@"

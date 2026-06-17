@@ -6,9 +6,7 @@ extracts key metrics, asks a local 8B model to identify threshold breaches,
 sends ntfy alerts for anything critical/warning, and indexes findings to RAG.
 """
 import asyncio
-import json
 import os
-import subprocess
 import sys
 from datetime import datetime, timezone
 from typing import Literal
@@ -17,6 +15,8 @@ from mcp.client.session import ClientSession
 from mcp.client.sse import sse_client
 from openai import AsyncOpenAI
 from pydantic import BaseModel, ValidationError
+
+from shared import send_ntfy, parse_mcp_tool
 
 # ---------------------------------------------------------------------------
 # Config
@@ -45,18 +45,9 @@ class PatrolReport(BaseModel):
 # ---------------------------------------------------------------------------
 # MCP helpers
 # ---------------------------------------------------------------------------
-def _parse_mcp(result) -> dict | list:
-    try:
-        text = "\n".join(c.text for c in result.content if c.type == "text")
-        return json.loads(text)
-    except Exception:
-        return {"error": "parse_failed"}
-
-
 async def _call(session: ClientSession, tool: str, **kwargs) -> dict | list:
     try:
-        result = await session.call_tool(tool, kwargs)
-        return _parse_mcp(result)
+        return parse_mcp_tool(await session.call_tool(tool, kwargs))
     except Exception as e:
         return {"error": str(e)}
 
@@ -319,21 +310,12 @@ async def _summarise(alerts: list[Alert], healthy: list[str]) -> str:
 
 async def _analyse(metrics: dict, now: str) -> PatrolReport:
     alerts, healthy = _check_thresholds(metrics)
-    summary = await _summarise(alerts, healthy)
+    try:
+        summary = await _summarise(alerts, healthy)
+    except Exception as e:
+        print(f"[WARN] LLM summary failed: {e}", file=sys.stderr)
+        summary = f"{len(alerts)} alert(s) detected" if alerts else "All systems nominal"
     return PatrolReport(alerts=alerts, healthy_components=healthy, one_line_summary=summary)
-
-
-# ---------------------------------------------------------------------------
-# Notify
-# ---------------------------------------------------------------------------
-def _send_ntfy(title: str, tags: str, priority: str, message: str) -> None:
-    if not os.path.exists(NOTIFY_SH):
-        print(f"[WARN] notify.sh not found at {NOTIFY_SH}", file=sys.stderr)
-        return
-    subprocess.run(
-        [NOTIFY_SH, title, tags, priority, message],
-        capture_output=True, timeout=10,
-    )
 
 
 # ---------------------------------------------------------------------------
@@ -385,7 +367,8 @@ async def main() -> None:
                     f"[{a.severity.upper()}] {a.component}: {a.message} ({a.observed_value})"
                     for a in (criticals + warnings)
                 )
-                _send_ntfy(
+                send_ntfy(
+                    NOTIFY_SH,
                     title=f"SRE Patrol {sev}: {report.one_line_summary}",
                     tags="rotating_light,computer" if criticals else "warning,computer",
                     priority="high" if criticals else "default",

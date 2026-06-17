@@ -7,9 +7,7 @@ week's RAG snapshot, and generates a markdown report. Sends ntfy
 summary and indexes the report to RAG.
 """
 import asyncio
-import json
 import os
-import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -17,6 +15,8 @@ from datetime import datetime, timezone
 from mcp.client.session import ClientSession
 from mcp.client.sse import sse_client
 from openai import AsyncOpenAI
+
+from shared import send_ntfy, parse_mcp_tool
 
 # ---------------------------------------------------------------------------
 # Config
@@ -58,18 +58,9 @@ class NodeStorage:
 # ---------------------------------------------------------------------------
 # MCP helpers
 # ---------------------------------------------------------------------------
-def _parse_mcp(result) -> dict | list:
-    try:
-        text = "\n".join(c.text for c in result.content if c.type == "text")
-        return json.loads(text)
-    except Exception:
-        return {"error": "parse_failed"}
-
-
 async def _call(session: ClientSession, tool: str, **kwargs) -> dict | list:
     try:
-        result = await session.call_tool(tool, kwargs)
-        return _parse_mcp(result)
+        return parse_mcp_tool(await session.call_tool(tool, kwargs))
     except Exception as e:
         return {"error": str(e)}
 
@@ -255,17 +246,6 @@ async def _generate_report(dionysus: NodeStorage, archive: NodeStorage,
 
 
 # ---------------------------------------------------------------------------
-# Notify
-# ---------------------------------------------------------------------------
-def _send_ntfy(title: str, tags: str, priority: str, message: str) -> None:
-    if not os.path.exists(NOTIFY_SH):
-        print(f"[WARN] notify.sh not found at {NOTIFY_SH}", file=sys.stderr)
-        return
-    subprocess.run([NOTIFY_SH, title, tags, priority, message],
-                   capture_output=True, timeout=10)
-
-
-# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 async def _collect(session: ClientSession) -> tuple:
@@ -324,7 +304,17 @@ async def main() -> None:
 
     # Phase 2: LLM report — MCP session is closed, no keepalive pressure
     print(f"[2/4] Generating report with {REPORT_MODEL}...")
-    report_md = await _generate_report(dionysus, archive, disk_breakdown, prior_snapshot, now)
+    try:
+        report_md = await _generate_report(dionysus, archive, disk_breakdown, prior_snapshot, now)
+    except Exception as e:
+        print(f"[WARN] LLM report generation failed: {e}", file=sys.stderr)
+        report_md = (
+            f"## Capacity Overview\n\n"
+            f"| Node | Total TB | Free TB | Fill % |\n|------|----------|---------|--------|\n"
+            f"| dionysus | {dionysus.total_tb} | {dionysus.free_tb} | {dionysus.fill_pct}% |\n"
+            f"| archive  | {archive.total_tb}  | {archive.free_tb}  | {archive.fill_pct}% |\n\n"
+            f"_LLM generation failed: {e}_"
+        )
 
     # Phase 3: save report
     print("[3/4] Saving report...")
@@ -351,7 +341,8 @@ async def main() -> None:
     )
     priority = "high" if any(r for r in [archive.runway_days, dionysus.runway_days]
                              if r is not None and r < 30) else "default"
-    _send_ntfy(
+    send_ntfy(
+        NOTIFY_SH,
         title=f"Storage Report: {', '.join(urgency)}",
         tags="floppy_disk,chart_with_upwards_trend",
         priority=priority,

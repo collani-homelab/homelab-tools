@@ -7,9 +7,7 @@ Lidarr wanted/missing counts, and Tautulli for transcode load and session
 errors. Sends ntfy on issues and writes a report.
 """
 import asyncio
-import json
 import os
-import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -19,6 +17,8 @@ from mcp.client.session import ClientSession
 from mcp.client.sse import sse_client
 from openai import AsyncOpenAI
 from pydantic import BaseModel, ValidationError
+
+from shared import send_ntfy, parse_mcp_tool, parse_mcp_resource
 
 # ---------------------------------------------------------------------------
 # Config
@@ -32,26 +32,16 @@ NOTIFY_SH    = os.getenv("NOTIFY_SH",    "")
 # ---------------------------------------------------------------------------
 # MCP helpers
 # ---------------------------------------------------------------------------
-def _parse(result) -> dict | list:
-    try:
-        text = "".join(c.text for c in result.contents if hasattr(c, "text"))
-        return json.loads(text)
-    except Exception:
-        return {"error": "parse_failed"}
-
-
 async def _resource(session: ClientSession, uri: str) -> dict | list:
     try:
-        return _parse(await session.read_resource(uri))
+        return parse_mcp_resource(await session.read_resource(uri))
     except Exception as e:
         return {"error": str(e)}
 
 
 async def _tool(session: ClientSession, name: str, **kwargs) -> dict | list:
     try:
-        result = await session.call_tool(name, kwargs)
-        text = "".join(c.text for c in result.content if hasattr(c, "text"))
-        return json.loads(text)
+        return parse_mcp_tool(await session.call_tool(name, kwargs))
     except Exception as e:
         return {"error": str(e)}
 
@@ -261,16 +251,6 @@ def _build_report(now: str, issues: list[Issue], tautulli_stats: dict,
 
 
 # ---------------------------------------------------------------------------
-# Notify
-# ---------------------------------------------------------------------------
-def _send_ntfy(title: str, tags: str, priority: str, message: str) -> None:
-    if not os.path.exists(NOTIFY_SH):
-        return
-    subprocess.run([NOTIFY_SH, title, tags, priority, message],
-                   capture_output=True, timeout=10)
-
-
-# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 async def main() -> None:
@@ -309,7 +289,11 @@ async def main() -> None:
     warnings  = [i for i in issues if i.severity == "warning"]
     print(f"      {len(issues)} issue(s): {len(criticals)} critical, {len(warnings)} warning")
 
-    summary = await _summarise(issues, tautulli_stats)
+    try:
+        summary = await _summarise(issues, tautulli_stats)
+    except Exception as e:
+        print(f"[WARN] LLM summary failed: {e}", file=sys.stderr)
+        summary = f"{len(issues)} issue(s) detected" if issues else "Media pipeline healthy — no issues detected"
 
     print("[3/3] Writing report and notifying...")
     report_md = _build_report(now, issues, tautulli_stats,
@@ -326,7 +310,8 @@ async def main() -> None:
         sev = "CRITICAL" if criticals else "WARNING"
         body = "\n".join(f"[{i.severity.upper()}] {i.component}: {i.message}"
                          for i in (criticals + warnings))
-        _send_ntfy(
+        send_ntfy(
+            NOTIFY_SH,
             title=f"Media Health {sev}: {summary[:80]}",
             tags="movie_camera,warning" if warnings else "movie_camera,rotating_light",
             priority="high" if criticals else "default",
