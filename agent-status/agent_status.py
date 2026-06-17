@@ -468,7 +468,7 @@ def build_unraid_device_status(
 
             if "commlost" in status_str.lower():
                 ups_health_state = "TELEMETRY_FAILURE"
-            elif charge < 100 or "online" not in status_str.lower() or load > 85:
+            elif charge < 50 or "online" not in status_str.lower() or load > 85:
                 ups_health_state = "POWER_EVENT"
 
     details = UnraidDetails(

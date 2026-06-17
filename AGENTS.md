@@ -4,7 +4,7 @@ This file is the primary context layer for AI agents operating in this repositor
 
 ## 1. Repository Purpose & Scope
 
-A collection of autonomous Python agents and developer tools for a self-hosted homelab. All agents communicate with the homelab over [homelab-mcp](https://github.com/collani-homelab/homelab-mcp) SSE. They run as scheduled Dagu DAGs on the SRE machine (`192.168.99.178`).
+A collection of autonomous Python agents and developer tools for a self-hosted homelab. All agents communicate with the homelab over [homelab-mcp](https://github.com/collani-homelab/homelab-mcp) SSE. They run as scheduled Dagu DAGs on the SRE machine.
 
 **This is a public portfolio repo.** Keep secrets out of code and commit history. Sensitive config goes in `.env` files on the host, never in this repo.
 
