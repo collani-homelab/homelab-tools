@@ -24,6 +24,8 @@ jobs:
           - agent-storage-report
           - agent-media-health
           - agent-network-sentinel
+          - agent-vision-patrol
+          - agent-data-patrol
 
     steps:
       - name: Checkout

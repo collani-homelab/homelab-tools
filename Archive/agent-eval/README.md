@@ -1,4 +1,19 @@
-# Agent-Eval
+# Agent-Eval (ARCHIVED — DEPRECATED 2026-06-16)
+
+**This is the extraction source for `llm-eval-kit`, kept for history only. Do not use it.**
+
+This was the direct source extracted into the standalone OSS package
+[`llm-eval-kit`](https://github.com/wcollani/llm-eval-kit) (also checked out locally at
+`~/repos/llm-eval-kit`). Use that instead — it's pip-installable
+(`pip install -e ~/repos/llm-eval-kit` or `git+https://github.com/wcollani/llm-eval-kit.git`) and
+provides the same CLI/`GEval` scoring plus env-var-based Ollama routing, Prometheus Pushgateway
+metrics, and a console script (`llm-eval <experiment.yaml>`).
+
+`homelab-tools/prompt-optimizer` is the active dogfooding consumer of `llm-eval-kit`. Production
+experiment configs that used to live in `experiments/` here now live at
+`homelab-platform/services/dagu/dags/experiments-config/`.
+
+---
 
 `agent-eval` is a CLI evaluation framework built for the homelab to benchmark agent performance using DeepEval and litellm. Traces are emitted over OTLP directly to your telemetry backend (e.g. Arize Phoenix & Loki via Grafana Alloy).
 

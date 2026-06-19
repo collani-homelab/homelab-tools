@@ -31,6 +31,8 @@ Key rule: **the LLM never decides severity.** All threshold checks are determini
 | `agent-network-sentinel/` | Every 5 min UniFi client scan against MAC allowlist |
 | `agent-media-health/` | Daily media stack health (NZBGet, Sonarr, Radarr, Tautulli) |
 | `agent-storage-report/` | Weekly Unraid array utilization report with projected fill dates |
+| `agent-vision-patrol/` | Every 30 min — screenshots Grafana panels, multimodal LLM anomaly detection |
+| `agent-data-patrol/` | Every 30 min — z-score over Prometheus + Loki error rate + Phoenix spans; compare.py for head-to-head eval vs vision-patrol |
 | `agent-standup/` | Go binary — nightly 8-persona fan-out standup report |
 | `agent-status/` | CLI dashboard for roadmap/project status |
 | `prompt-optimizer/` | Hill-climbing prompt optimizer using llm-eval-kit GEval scoring |
